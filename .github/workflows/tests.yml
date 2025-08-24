@@ -1,0 +1,107 @@
+name: brew test-bot
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  HOMEBREW_ARM64_TESTING: 1
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  tap-syntax:
+    name: Tap syntax
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/homebrew/ubuntu22.04:main
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+        with:
+          core: true
+          cask: false
+          test-bot: true
+          stable: true
+
+      - name: Cache style cache
+        uses: actions/cache@v4
+        with:
+          path: /home/linuxbrew/.cache/Homebrew/style
+          key: style-cache-${{ github.sha }}
+          restore-keys: style-cache-
+
+      - run: brew test-bot --only-tap-syntax
+
+  tests:
+    needs: tap-syntax
+    if: github.event_name == 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS 15 (arm64)
+            runs-on: macos-15
+          - name: macOS 14 (arm64)
+            runs-on: macos-14
+          - name: macOS 13 (x86_64)
+            runs-on: macos-13
+          - name: Ubuntu 22.04 (x86_64)
+            runs-on: ubuntu-22.04
+            container:
+              image: ghcr.io/homebrew/ubuntu22.04:main
+              options: --user=linuxbrew
+            working-directory: /github/home
+          - name: Ubuntu 22.04 (arm64)
+            runs-on: ubuntu-22.04-arm
+            container:
+              image: ghcr.io/homebrew/ubuntu22.04:main
+              options: --user=linuxbrew
+            working-directory: /github/home
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runs-on }}
+    permissions:
+      actions: read
+      checks: read
+      contents: read
+      packages: read
+      pull-requests: read
+    container: ${{ matrix.container }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ matrix.working-directory || github.workspace }}
+    env:
+      BOTTLES_DIR: ${{ matrix.working-directory || github.workspace }}/bottles
+    steps:
+      - name: Pre-test steps
+        uses: Homebrew/actions/pre-build@main
+        with:
+          bottles-directory: ${{ env.BOTTLES_DIR }}
+          cleanup: ${{ runner.os == 'macOS' }}
+
+      - name: Run brew test-bot
+        run: |
+          HOMEBREW_DOCKER_REGISTRY_TOKEN=$(echo -n "${TOKEN}" | base64 | tr -d '\n')
+          echo "::add-mask::${HOMEBREW_DOCKER_REGISTRY_TOKEN}"
+          export HOMEBREW_DOCKER_REGISTRY_TOKEN
+          brew test-bot --only-formulae --root-url="https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
+        id: brew-test-bot-formulae
+        if: github.event_name == 'pull_request'
+        env:
+          TOKEN: ${{ github.token }}
+        working-directory: ${{ env.BOTTLES_DIR }}
+
+      - name: Post-build steps
+        if: always() && github.event_name == 'pull_request'
+        uses: Homebrew/actions/post-build@main
+        with:
+          bottles-directory: ${{ env.BOTTLES_DIR }}
+          logs-directory: ${{ format('{0}/logs', env.BOTTLES_DIR) }}
+          runner: ${{ matrix.runs-on }}
+          cleanup: false
