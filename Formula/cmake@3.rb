@@ -12,6 +12,15 @@ class CmakeAT3 < Formula
     regex(/^v?(3(?:\.\d+)+)$/i)
   end
 
+  bottle do
+    root_url "https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0c509188a70fbd5c89a3055054c37d27ef468dd58d46c19213780c1560fdec77"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "1bfdf0de74f10e349764035c607dd86c35f1e287107f5898e3ca351d5d235c97"
+    sha256 cellar: :any_skip_relocation, ventura:       "a0e79f88f2191481dc6cf10f66f85849761877b9f69625bc411403a9bb35bdae"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "df6a96ed75444d505c39d72258662dab8d890b0516ea5fa668a343b5d75de344"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "fc226a9a88da5f0ba67df51ee2b3a4bc5c15354f1dd2568b25f64c2c551b4cfe"
+  end
+
   keg_only :versioned_formula
 
   uses_from_macos "ncurses"
