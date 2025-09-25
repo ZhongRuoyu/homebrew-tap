@@ -1,9 +1,9 @@
 class CmakeAT3 < Formula
   desc "Cross-platform make"
   homepage "https://www.cmake.org/"
-  url "https://github.com/Kitware/CMake/releases/download/v3.31.8/cmake-3.31.8.tar.gz"
-  mirror "https://cmake.org/files/v3.31/cmake-3.31.8.tar.gz"
-  sha256 "e3cde3ca83dc2d3212105326b8f1b565116be808394384007e7ef1c253af6caa"
+  url "https://github.com/Kitware/CMake/releases/download/v3.31.9/cmake-3.31.9.tar.gz"
+  mirror "https://cmake.org/files/v3.31/cmake-3.31.9.tar.gz"
+  sha256 "5d4fdec04247ca8a8e8f63692f0d0f1e9d6d082a2bdd008dff8ab3ba7215aa83"
   license "BSD-3-Clause"
   head "https://gitlab.kitware.com/cmake/cmake.git", branch: "master"
 
@@ -14,11 +14,13 @@ class CmakeAT3 < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0c509188a70fbd5c89a3055054c37d27ef468dd58d46c19213780c1560fdec77"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "1bfdf0de74f10e349764035c607dd86c35f1e287107f5898e3ca351d5d235c97"
-    sha256 cellar: :any_skip_relocation, ventura:       "a0e79f88f2191481dc6cf10f66f85849761877b9f69625bc411403a9bb35bdae"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "df6a96ed75444d505c39d72258662dab8d890b0516ea5fa668a343b5d75de344"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "fc226a9a88da5f0ba67df51ee2b3a4bc5c15354f1dd2568b25f64c2c551b4cfe"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "a418e84c182de2dd5bc61eb12b681ea0a158eb782096eee85e1f8a6ec5a950dc"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d0dcf2207b87d4801d56ee3f47e70825b79ae7763a45881c713bb689e3a4500e"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "530a6b805c40b1b60f93eb2a1222380411996623a1f4268eeb67cf3a3336152c"
+    sha256 cellar: :any_skip_relocation, sequoia:       "fe96c5fd05ca603c4f1e884549e631a30a6e7b3e06cd09900116b18a727e230f"
+    sha256 cellar: :any_skip_relocation, ventura:       "bf8c5389ea530982da559ffe2ea219e50847e77a07c6b9d3979c2cb2aaa317f5"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "25e199d09bf9630fc18dfb5135ae275f2c51ca5622736e215d6ed8707fc9a0e9"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "8effccead207d73f6a52c88c2d6b6cad2a76b9ce460aa53711fa7f23576367c0"
   end
 
   keg_only :versioned_formula
