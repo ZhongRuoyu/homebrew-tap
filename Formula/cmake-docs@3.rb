@@ -13,11 +13,11 @@ class CmakeDocsAT3 < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "f603f14e1e6f2526270138a2bd24f6d48103d2747fdab246b0a09d5dcc91e5cf"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "923cb8aa25b1041288896a4a8b93046fe3325a6c9ae982c0de822c1c77eac47b"
-    sha256 cellar: :any_skip_relocation, ventura:       "6e01e3cdbaa11e9fc36ad900e49350c390be4f31c2df67b4e406abd7fe5ce342"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "97d9e803fea1de7f0b7df1bcf746b5e307bd163a63825ef5632c3a4e795daf06"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "189ee6f097f8beb823d8f8631ef9aa072fdf27299497186048ae53ad2fe36ff7"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "2ff59b5cec5457be8257527e7b231812496d644013463f729019da3ce8aa8caa"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "71319720671c9a84c04e3c92516a1885ed7cea5231c3a2bac32ac9612363067e"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "99dcfdce95307ed2f1314e85fc7d30c996b7bca77d72aa3a1641153f7accc3b3"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "caaf228831d9124ca310415298c5f480328bb98c332fe83bc9eee1ec88f068e9"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "77c4713b8124a55846831f62aff1423f4b6269c6d7d0d1246b75ec3499c3a8ab"
   end
 
   keg_only :versioned_formula
