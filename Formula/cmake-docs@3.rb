@@ -1,9 +1,9 @@
 class CmakeDocsAT3 < Formula
   desc "Documentation for CMake"
   homepage "https://www.cmake.org/"
-  url "https://github.com/Kitware/CMake/releases/download/v3.31.10/cmake-3.31.10.tar.gz"
-  mirror "https://cmake.org/files/v3.31/cmake-3.31.10.tar.gz"
-  sha256 "cf06fadfd6d41fa8e1ade5099e54976d1d844fd1487ab99942341f91b13d3e29"
+  url "https://github.com/Kitware/CMake/releases/download/v3.31.11/cmake-3.31.11.tar.gz"
+  mirror "https://cmake.org/files/v3.31/cmake-3.31.11.tar.gz"
+  sha256 "c0a3b3f2912b2166f522d5010ffb6029d8454ee635f5ad7a3247e0be7f9a15c9"
   license "BSD-3-Clause"
   head "https://gitlab.kitware.com/cmake/cmake.git", branch: "master"
 
