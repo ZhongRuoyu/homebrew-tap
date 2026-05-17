@@ -46,6 +46,8 @@ jobs:
         include:
           - name: macOS 26 (arm64)
             runs-on: macos-26
+          - name: macOS 26 (x86_64)
+            runs-on: macos-26-intel
           - name: macOS 15 (arm64)
             runs-on: macos-15
           - name: macOS 15 (x86_64)
