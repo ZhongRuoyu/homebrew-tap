@@ -117,7 +117,7 @@ jobs:
       - name: Merge PR
         working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           EXPECTED_SHA: ${{ steps.brew-pr-pull.outputs.head_sha }}
         run: |
           gh pr merge \
