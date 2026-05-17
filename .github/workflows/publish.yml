@@ -9,6 +9,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: false
 
+defaults:
+  run:
+    shell: bash -xeuo pipefail {0}
+
 env:
   GH_REPO: ${{ github.repository }}
   PR: ${{ github.event.pull_request.number }}
@@ -16,9 +20,9 @@ env:
 jobs:
   pr-pull:
     if: contains(github.event.pull_request.labels.*.name, 'pr-pull')
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/homebrew/ubuntu22.04:main
+      image: ghcr.io/homebrew/brew:main
     permissions:
       actions: read
       artifact-metadata: write
@@ -85,7 +89,7 @@ jobs:
           directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
           branch: ${{ github.head_ref }}
 
-      - name: Remove `pr-pull` label on failure
+      - name: Remove pr-pull label on failure
         if: failure()
         working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
         env:
