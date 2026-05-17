@@ -83,7 +83,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh pr edit --remove-label='pr-pull' "$PR"
+          gh pr edit --remove-label="pr-pull" "$PR"
+
+      - name: Add CI-published-bottle-commits label
+        working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr edit --add-label="CI-published-bottle-commits" "$PR"
 
       - name: Wait until PR branch is in sync with local repository
         working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
