@@ -114,14 +114,15 @@ jobs:
             exit 1
           fi
 
-      - name: Merge PR
+      - name: Enable automerge
         working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           EXPECTED_SHA: ${{ steps.brew-pr-pull.outputs.head_sha }}
         run: |
           gh pr merge \
+            --auto \
+            --merge \
             --delete-branch \
             --match-head-commit="$EXPECTED_SHA" \
-            --merge \
             "$PR"
