@@ -10,6 +10,10 @@ concurrency:
   group: tests-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+defaults:
+  run:
+    shell: bash -xeuo pipefail {0}
+
 env:
   GH_REPO: ${{ github.repository }}
   PR: ${{ github.event.pull_request.number }}
@@ -17,9 +21,9 @@ env:
 jobs:
   tap-syntax:
     name: Tap syntax
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/homebrew/ubuntu22.04:main
+      image: ghcr.io/homebrew/brew:main
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
@@ -64,7 +68,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   tests:
-    needs: setup-tests
+    needs: [tap-syntax, setup-tests]
     if: >
       github.event_name == 'pull_request' &&
       !fromJson(needs.setup-tests.outputs.syntax-only)
@@ -138,7 +142,7 @@ jobs:
           cleanup: false
 
   conclusion:
-    needs: [tests, setup-tests]
+    needs: [tap-syntax, setup-tests, tests]
     if: always() && github.event_name == 'pull_request'
     runs-on: ubuntu-slim
     steps:
