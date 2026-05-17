@@ -6,12 +6,13 @@ on:
       - main
   pull_request:
 
-env:
-  HOMEBREW_ARM64_TESTING: 1
-
 concurrency:
   group: tests-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  GH_REPO: ${{ github.repository }}
+  PR: ${{ github.event.pull_request.number }}
 
 jobs:
   tap-syntax:
@@ -37,9 +38,36 @@ jobs:
 
       - run: brew test-bot --only-tap-syntax
 
-  tests:
-    needs: tap-syntax
+  setup-tests:
     if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      syntax-only: ${{ steps.check-labels.outputs.syntax-only }}
+    steps:
+      - name: Check for CI labels
+        id: check-labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          labels="$(gh pr view "$PR" --json=labels --jq='.labels[].name')"
+          if grep -Fqx 'CI-syntax-only' <<< "$labels"; then
+            syntax_only=true
+          elif grep -Fqx 'CI-published-bottle-commits' <<< "$labels"; then
+            syntax_only=true
+          else
+            syntax_only=false
+          fi
+          {
+            echo "syntax-only=$syntax_only"
+          } >> "$GITHUB_OUTPUT"
+
+  tests:
+    needs: setup-tests
+    if: >
+      github.event_name == 'pull_request' &&
+      !fromJson(needs.setup-tests.outputs.syntax-only)
     strategy:
       fail-fast: false
       matrix:
@@ -110,13 +138,14 @@ jobs:
           cleanup: false
 
   conclusion:
-    needs: [tests]
+    needs: [tests, setup-tests]
     if: always() && github.event_name == 'pull_request'
     runs-on: ubuntu-slim
     steps:
       - name: Check `tests` result
         env:
           TESTS_RESULT: ${{ needs.tests.result }}
+          SYNTAX_ONLY: ${{ needs.setup-tests.outputs.syntax-only }}
         run: |
           result="${TESTS_RESULT}"
           # Silence lint error about backtick usage inside single quotes.
@@ -133,7 +162,17 @@ jobs:
             exit 1
           fi
 
-          if [[ "$result" = "success" ]]
+          syntax_only="${SYNTAX_ONLY-}"
+
+          # The tests job can be skipped only if the PR is syntax-only.
+          if [[ "$result" = "skipped" ]] && [[ "$syntax_only" = "true" ]]
+          then
+            exit 0
+          fi
+
+          # The test job can succeed only if the PR is not syntax-only.
+          # Otherwise it must have been skipped.
+          if [[ "$result" = "success" ]] && [[ "$syntax_only" = "false" ]]
           then
             exit 0
           fi
