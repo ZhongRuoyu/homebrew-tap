@@ -67,6 +67,7 @@ jobs:
             --tap="$GH_REPO" \
             --workflows=tests.yml \
             --committer="$ZHONGRUOYU_COMMIT_APP_NAME_EMAIL" \
+            --retain-bottle-dir \
             "$PR"
           echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
