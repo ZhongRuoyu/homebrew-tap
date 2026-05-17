@@ -26,7 +26,6 @@ jobs:
         with:
           core: true
           cask: false
-          test-bot: true
           stable: true
 
       - name: Cache style cache
