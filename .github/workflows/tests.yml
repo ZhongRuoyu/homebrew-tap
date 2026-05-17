@@ -108,3 +108,39 @@ jobs:
           logs-directory: ${{ format('{0}/logs', env.BOTTLES_DIR) }}
           runner: ${{ matrix.runs-on }}
           cleanup: false
+
+  conclusion:
+    needs: [tests]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-slim
+    steps:
+      - name: Check `tests` result
+        env:
+          TESTS_RESULT: ${{ needs.tests.result }}
+        run: |
+          result="${TESTS_RESULT}"
+          # Silence lint error about backtick usage inside single quotes.
+          # shellcheck disable=SC2016
+          printf '::notice ::`tests` job status: %s\n' "$result"
+
+          # Possible values are `success`, `failure`, `cancelled` or `skipped`.
+          # https://docs.github.com/en/actions/learn-github-actions/contexts#needs-context
+          if [[ "$result" = "failure" ]] || [[ "$result" = "cancelled" ]]
+          then
+            # Silence lint error about backtick usage inside single quotes.
+            # shellcheck disable=SC2016
+            printf '::error ::`tests` job %s.\n' "$result"
+            exit 1
+          fi
+
+          if [[ "$result" = "success" ]]
+          then
+            exit 0
+          fi
+
+          # If we made it here, something went wrong with our workflow run that needs investigating.
+          printf '::error ::Unexpected outcome!\n'
+          # Silence lint error about backtick usage inside single quotes.
+          # shellcheck disable=SC2016
+          printf '::error ::`tests` job result: %s\n' "$result" # success/skipped
+          exit 1
