@@ -7,6 +7,15 @@ class Shortener < Formula
   license "MIT"
   head "https://github.com/ZhongRuoyu/shortener.git", branch: "main"
 
+  bottle do
+    root_url "https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c0a94f0721658030bebc906783326c80e4579e78211cde1ef5087ff685b83123"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7ef3c871bbe1e5750cf6661bfde4742569e72a8f02262e40c9502a9706bcfe48"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "59099c25f92521a0081c101f427d438ef0d5e85b51f18f5059d6ae5ea5aef9b5"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "f9489b8cdda10498488deaa432be5a25f4cc6382d037d96e0774c54666d7e3f1"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b4beb10135c547c620b04ac1fcf10ea4ba3d1df905c741d198ed96b2f673a0c3"
+  end
+
   depends_on "rust" => :build
   uses_from_macos "sqlite"
 
