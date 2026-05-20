@@ -2,8 +2,8 @@ class Shortener < Formula
   desc "Simple URL shortener"
   homepage "https://github.com/ZhongRuoyu/shortener"
   url "https://github.com/ZhongRuoyu/shortener.git",
-      tag:      "v0.1.1",
-      revision: "b43a782efc79cf7598245a65617af4538819b96d"
+      tag:      "v0.1.2",
+      revision: "f4f386661f92acbbf7907d1c379427923980b7fd"
   license "MIT"
   head "https://github.com/ZhongRuoyu/shortener.git", branch: "main"
 
@@ -21,6 +21,8 @@ class Shortener < Formula
 
   def install
     system "cargo", "install", *std_cargo_args
+    generate_completions_from_executable(bin/"shortener", "completions")
+    generate_completions_from_executable(bin/"shortenerkey", "completions")
   end
 
   test do
