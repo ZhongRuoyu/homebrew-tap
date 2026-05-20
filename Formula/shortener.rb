@@ -2,18 +2,18 @@ class Shortener < Formula
   desc "Simple URL shortener"
   homepage "https://github.com/ZhongRuoyu/shortener"
   url "https://github.com/ZhongRuoyu/shortener.git",
-      tag:      "v0.1.1",
-      revision: "b43a782efc79cf7598245a65617af4538819b96d"
+      tag:      "v0.1.2",
+      revision: "f4f386661f92acbbf7907d1c379427923980b7fd"
   license "MIT"
   head "https://github.com/ZhongRuoyu/shortener.git", branch: "main"
 
   bottle do
     root_url "https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "c0a94f0721658030bebc906783326c80e4579e78211cde1ef5087ff685b83123"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7ef3c871bbe1e5750cf6661bfde4742569e72a8f02262e40c9502a9706bcfe48"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "59099c25f92521a0081c101f427d438ef0d5e85b51f18f5059d6ae5ea5aef9b5"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "f9489b8cdda10498488deaa432be5a25f4cc6382d037d96e0774c54666d7e3f1"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b4beb10135c547c620b04ac1fcf10ea4ba3d1df905c741d198ed96b2f673a0c3"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "0afc6183ef33466916f0205b717049bfac92ab93e872a45ff238d935a80b3644"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "52abf7563ab4681b9f8f4e79b107589fc9bbcc8c31b58edf9ecb2dbbfac89c22"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "b873f4c686e3569574fce013f458436ee727fa447115f375f5ae22f754948a1e"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "b28b35e5f5544f31f5142cc7e9444d4cfabbea32fc7074d8f1efffbd4d27afee"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "01c6de8594529324ccc0d0e6b90d8188c4ccde56336eefb5017ca0a9716f762f"
   end
 
   depends_on "rust" => :build
@@ -21,6 +21,8 @@ class Shortener < Formula
 
   def install
     system "cargo", "install", *std_cargo_args
+    generate_completions_from_executable(bin/"shortener", "completions")
+    generate_completions_from_executable(bin/"shortenerkey", "completions")
   end
 
   test do
