@@ -2,8 +2,8 @@ class Ocppsim < Formula
   desc "Terminal OCPP-J charge point simulator"
   homepage "https://github.com/ZhongRuoyu/ocppsim"
   url "https://github.com/ZhongRuoyu/ocppsim.git",
-      tag:      "v0.1.0",
-      revision: "ca49e137ef843c5fb954c53de6d36ed6fb586e87"
+      tag:      "v0.1.1",
+      revision: "1ce1dce441e0b299596c5342b39b5f91b1c1d75b"
   license "MIT"
   head "https://github.com/ZhongRuoyu/ocppsim.git", branch: "main"
 
@@ -20,6 +20,7 @@ class Ocppsim < Formula
 
   def install
     system "cargo", "install", *std_cargo_args
+    generate_completions_from_executable(bin/"ocppsim", "completions")
   end
 
   test do
