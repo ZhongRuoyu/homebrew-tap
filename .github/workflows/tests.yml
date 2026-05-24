@@ -10,6 +10,8 @@ concurrency:
   group: tests-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+permissions: {}
+
 defaults:
   run:
     shell: bash -xeuo pipefail {0}
@@ -27,7 +29,7 @@ jobs:
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@main # zizmor: ignore[unpinned-uses]
         with:
           core: true
           cask: false
@@ -115,7 +117,7 @@ jobs:
       BOTTLES_DIR: ${{ matrix.working-directory || github.workspace }}/bottles
     steps:
       - name: Pre-test steps
-        uses: Homebrew/actions/pre-build@main
+        uses: Homebrew/actions/pre-build@main # zizmor: ignore[unpinned-uses]
         with:
           bottles-directory: ${{ env.BOTTLES_DIR }}
           cleanup: ${{ runner.os == 'macOS' }}
@@ -134,7 +136,7 @@ jobs:
 
       - name: Post-build steps
         if: always() && github.event_name == 'pull_request'
-        uses: Homebrew/actions/post-build@main
+        uses: Homebrew/actions/post-build@main # zizmor: ignore[unpinned-uses]
         with:
           bottles-directory: ${{ env.BOTTLES_DIR }}
           logs-directory: ${{ format('{0}/logs', env.BOTTLES_DIR) }}
