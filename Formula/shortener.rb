@@ -2,8 +2,8 @@ class Shortener < Formula
   desc "Simple URL shortener"
   homepage "https://github.com/ZhongRuoyu/shortener"
   url "https://github.com/ZhongRuoyu/shortener.git",
-      tag:      "v0.1.2",
-      revision: "f4f386661f92acbbf7907d1c379427923980b7fd"
+      tag:      "v0.2.0",
+      revision: "bb7489c27bf4f5caee6978bc7b38d591ce0c4329"
   license "MIT"
   head "https://github.com/ZhongRuoyu/shortener.git", branch: "main"
 
@@ -21,8 +21,9 @@ class Shortener < Formula
 
   def install
     system "cargo", "install", *std_cargo_args
-    generate_completions_from_executable(bin/"shortener", "completions")
-    generate_completions_from_executable(bin/"shortenerkey", "completions")
+    bin.children.each do |binary|
+      generate_completions_from_executable(binary, "completions")
+    end
   end
 
   test do
@@ -32,37 +33,40 @@ class Shortener < Formula
 
     system "sqlite3", "shortener.db", "VACUUM;"
 
-    system bin/"shortenerkey", "-d", "shortener.db", "create-user", "test"
-    key = shell_output("#{bin}/shortenerkey -d shortener.db create-key test").chomp
+    system bin/"shortener-key", "-d", "shortener.db", "create-user", "test"
+    key = shell_output("#{bin}/shortener-key -d shortener.db create-key test").chomp
 
     begin
       port = free_port
       shorten_args = %W[
         --auth
-        --sqlite-db shortener.db
+        --database shortener.db
         --listen-port #{port}
       ]
       pid = spawn bin/"shortener", *shorten_args
 
       sleep 1
 
+      code = "brew"
       page = "https://brew.sh/"
       curl_args = [
         "-H", "Authorization: Bearer #{key}",
-        "http://localhost:#{port}/brew",
+        "http://localhost:#{port}/#{code}",
         "-d", page
       ]
       system "curl", *curl_args
-      assert_equal page, shell_output("curl http://localhost:#{port}/brew").chomp
+      assert_equal page, shell_output("curl http://localhost:#{port}/#{code}").chomp
     ensure
       Process.kill("TERM", pid)
       Process.wait(pid)
     end
 
+    assert_equal page, shell_output("#{bin}/shortener-url -d shortener.db get #{code}").chomp
+
     dylibs = []
     dylibs << (Formula["sqlite"].opt_lib/shared_library("libsqlite3")) if OS.linux?
     dylibs.each do |library|
-      [bin/"shortener", bin/"shortenerkey"].each do |binary|
+      bin.children.each do |binary|
         assert Utils.binary_linked_to_library?(binary, library),
               "No linkage with #{library.basename}! Cargo is likely using a vendored version."
       end
