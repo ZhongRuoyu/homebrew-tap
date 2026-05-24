@@ -13,3 +13,5 @@ updates:
       github-actions:
         patterns:
           - "*"
+    labels:
+      - CI-syntax-only
