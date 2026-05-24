@@ -2,12 +2,15 @@ name: brew pr-pull
 
 on:
   pull_request_target:
+    # zizmor: ignore[dangerous-triggers] We need write permissions here.
     types:
       - labeled
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: false
+
+permissions: {}
 
 defaults:
   run:
@@ -22,7 +25,7 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'pr-pull')
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/homebrew/brew:main
+      image: ghcr.io/homebrew/brew:main # zizmor: ignore[unpinned-images]
     permissions:
       actions: read
       artifact-metadata: write
@@ -35,15 +38,14 @@ jobs:
       pull-requests: write
     defaults:
       run:
-        shell: bash
         working-directory: /github/home
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main
+        uses: Homebrew/actions/setup-homebrew@main # zizmor: ignore[unpinned-uses]
 
       - name: Set up git
-        uses: Homebrew/actions/git-user-config@main
+        uses: Homebrew/actions/git-user-config@main # zizmor: ignore[unpinned-uses]
         with:
           username: zhongruoyu-commit-app[bot]
 
@@ -82,9 +84,11 @@ jobs:
         with:
           client-id: ${{ vars.ZHONGRUOYU_COMMIT_APP_ID }}
           private-key: ${{ secrets.ZHONGRUOYU_COMMIT_APP_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Push commits
-        uses: Homebrew/actions/git-try-push@main
+        uses: Homebrew/actions/git-try-push@main # zizmor: ignore[unpinned-uses]
         with:
           token: ${{ steps.app-token.outputs.token }}
           directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
