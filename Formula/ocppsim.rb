@@ -2,8 +2,8 @@ class Ocppsim < Formula
   desc "Terminal OCPP-J charge point simulator"
   homepage "https://github.com/ZhongRuoyu/ocppsim"
   url "https://github.com/ZhongRuoyu/ocppsim.git",
-      tag:      "v0.1.1",
-      revision: "1ce1dce441e0b299596c5342b39b5f91b1c1d75b"
+      tag:      "v0.2.0",
+      revision: "8b650e7a0ce7cc14af6a17b76878ead2b998f65a"
   license "MIT"
   head "https://github.com/ZhongRuoyu/ocppsim.git", branch: "main"
 
