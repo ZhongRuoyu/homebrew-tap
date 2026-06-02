@@ -9,11 +9,11 @@ class Ocppsim < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "5d845f03454aef4f9964c0683a428d26f9eed68002d9dc3a2a3382719113c019"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "78ef8ded2394790d205a7688a45aee094bd6d3553b19e62d2d5a747c37e7b4cf"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "0c7e7b9f40d3a3ca7ed38c056a9f93cc4fe041aab6ee6e2cc1fd6d27c77d7ed9"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "1765b0b38ccaea074a36ea49ad54accaa6146eec9a144d78111314a15075abf3"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "79324469d63271d5643a4bb62f551116f5e533a25f50402992fbc21f6892f6f4"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "ff56984cfd7211438ab20812a24e4f142387deaaef5cc5e776a6c93fff502e03"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "70359ad8df98f50e9fc07ea261b7e57b022fd756e3291e215d1cfe7261e1110b"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "75fc4ec858ff7cbe5946811ec643314eed1d5befc686ba484d2d3d59ee882dbe"
+    sha256 cellar: :any,                 arm64_linux:   "30459d61edb5452cdc0397d0c648dae9a13a2c08c3708e98bc6b26dfdbff9411"
+    sha256 cellar: :any,                 x86_64_linux:  "047d7a15807cb94469b734a0f8f46a9e61fd833d94c45213a873fa3e2c51a66e"
   end
 
   depends_on "rust" => :build
