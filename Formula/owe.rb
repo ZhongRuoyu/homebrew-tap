@@ -8,6 +8,15 @@ class Owe < Formula
   license "MIT"
   head "https://github.com/ZhongRuoyu/owe.git", branch: "main"
 
+  bottle do
+    root_url "https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "53ae4dc056c99f893f1f27d151a6238d169b49b4e366cfdb9a9ae66ae71ae854"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "fe5778a3ce834ca2bfe018d936d65932a226731d12037cd173087a3c55287d00"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "64447438d4a823996921747ea3f3aeaf641777b8c85685fef648cf35c55f5701"
+    sha256 cellar: :any,                 arm64_linux:   "c786056cc6a0c7ffde6bb2c271dbab9f548d1805f1573fb22fa1680d4598dcdf"
+    sha256 cellar: :any,                 x86_64_linux:  "8f4e2cf5276076a142288b08c0d717a1a0e7981efcf16b59f602a01fbfc66488"
+  end
+
   depends_on "rust" => :build # for uv_build
   depends_on "python@3.14"
 
