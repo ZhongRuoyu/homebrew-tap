@@ -64,7 +64,7 @@ class Shortener < Formula
     assert_equal page, shell_output("#{bin}/shortener-url -d shortener.db get #{code}").chomp
 
     dylibs = []
-    dylibs << (Formula["sqlite"].opt_lib/shared_library("libsqlite3")) if OS.linux?
+    dylibs << (formula_opt_lib("sqlite")/shared_library("libsqlite3")) if OS.linux?
     dylibs.each do |library|
       bin.children.each do |binary|
         assert Utils.binary_linked_to_library?(binary, library),
