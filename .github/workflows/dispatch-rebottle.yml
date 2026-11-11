@@ -89,13 +89,13 @@ jobs:
           HOMEBREW_DISPATCHED_FORMULA: ${{ inputs.formula }}
         run: |
           RUNNERS = {
-            [:tahoe, :arm64]    => "macos-26",
-            [:sequoia, :arm64]  => "macos-15",
-            [:sonoma, :arm64]   => "macos-14",
-            [:tahoe, :x86_64]   => "macos-26-intel",
-            [:sequoia, :x86_64] => "macos-15-intel",
-            [:linux, :x86_64]   => "ubuntu-latest",
-            [:linux, :arm64]    => "ubuntu-24.04-arm",
+            [:golden_gate, :arm64] => "xcode-27",
+            [:tahoe, :arm64]       => "macos-26",
+            [:sequoia, :arm64]     => "macos-15",
+            [:tahoe, :x86_64]      => "macos-26-intel",
+            [:sequoia, :x86_64]    => "macos-15-intel",
+            [:linux, :x86_64]      => "ubuntu-latest",
+            [:linux, :arm64]       => "ubuntu-24.04-arm",
           }.freeze
 
           def runner_spec(system, arch)
