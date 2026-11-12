@@ -33,10 +33,12 @@ on:
 
 defaults:
   run:
-    shell: bash -xeuo pipefail {0}
+    shell: bash -euxo pipefail {0}
 
 # Intentionally the same as dispatch-build-bottle
-concurrency: bottle-${{ inputs.formula }}
+concurrency:
+  group: bottle-${{ inputs.formula }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -57,9 +59,10 @@ env:
 
 jobs:
   prepare:
+    name: Prepare
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/homebrew/brew:main
+      image: ghcr.io/homebrew/brew:main # zizmor: ignore[unpinned-images]
     outputs:
       runners: ${{ steps.determine-runners.outputs.runners }}
     steps:
@@ -74,14 +77,14 @@ jobs:
 
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main # zizmor: ignore[unpinned-uses]
+        uses: Homebrew/actions/setup-homebrew@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
         with:
           core: true
           cask: false
 
       - name: Determine runners
         id: determine-runners
-        shell: brew ruby {0}
+        shell: brew ruby {0} # zizmor: ignore[misfeature]
         env:
           HOMEBREW_DISPATCHED_FORMULA: ${{ inputs.formula }}
         run: |
@@ -154,24 +157,24 @@ jobs:
       fail-fast: ${{inputs.fail-fast}}
     name: Build bottle on ${{ matrix.runner }}
     runs-on: ${{ matrix.runner }}
-    container: ${{ matrix.container }}
+    container: ${{ matrix.container }} # zizmor: ignore[unpinned-images]
     timeout-minutes: ${{ fromJson(inputs.timeout) }}
     permissions:
-      actions: read
-      checks: read
+      actions: read # for `brew test-bot`
+      checks: read # for `brew test-bot`
       contents: read
-      packages: read
-      pull-requests: read
+      packages: read # for `brew test-bot`
+      pull-requests: read # for `brew test-bot`
     defaults:
       run:
-        shell: /bin/bash -xeuo pipefail {0}
+        shell: /bin/bash -euxo pipefail {0}
         working-directory: ${{ matrix.workdir || github.workspace }}
     env:
       HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
       BOTTLES_DIR: ${{ matrix.workdir || github.workspace }}/bottles
     steps:
       - name: Pre-test steps
-        uses: Homebrew/actions/pre-build@main # zizmor: ignore[unpinned-uses]
+        uses: Homebrew/actions/pre-build@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
         with:
           bottles-directory: ${{ env.BOTTLES_DIR }}
           cleanup: ${{ matrix.cleanup }}
@@ -194,7 +197,7 @@ jobs:
 
       - name: Post-build steps
         if: always()
-        uses: Homebrew/actions/post-build@main # zizmor: ignore[unpinned-uses]
+        uses: Homebrew/actions/post-build@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
         with:
           runner: ${{ matrix.runner }}
           cleanup: ${{ matrix.cleanup }}
@@ -202,21 +205,22 @@ jobs:
           logs-directory: ${{ env.BOTTLES_DIR }}/logs
 
   upload:
+    name: Upload bottles and create PR
     permissions:
-      actions: read
-      artifact-metadata: write
-      attestations: write
-      checks: read
-      contents: write
-      id-token: write
-      issues: read
-      packages: write
-      pull-requests: write
+      artifact-metadata: write # for generating build provenance
+      attestations: write # for generating build provenance
+      contents: write # for pushing bottle commit
+      id-token: write # for generating build provenance
+      packages: write # for uploading bottles
+      pull-requests: write # for creating and managing bottle PR
+    environment:
+      name: github
+      deployment: false
     runs-on: ubuntu-latest
     needs: bottle
     if: inputs.upload
     container:
-      image: ghcr.io/homebrew/brew:main
+      image: ghcr.io/homebrew/brew:main # zizmor: ignore[unpinned-images]
     env:
       HOMEBREW_SIMULATE_MACOS_ON_LINUX: 1
       GH_REPO: ${{ github.repository }}
@@ -227,7 +231,7 @@ jobs:
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main # zizmor: ignore[unpinned-uses]
+        uses: Homebrew/actions/setup-homebrew@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
         with:
           core: true
           cask: false
@@ -240,7 +244,7 @@ jobs:
           merge-multiple: true
 
       - name: Configure Git user
-        uses: Homebrew/actions/git-user-config@main # zizmor: ignore[unpinned-uses]
+        uses: Homebrew/actions/git-user-config@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
         with:
           username: zhongruoyu-commit-app[bot]
 
@@ -277,7 +281,7 @@ jobs:
           permission-pull-requests: write
 
       - name: Push commits
-        uses: Homebrew/actions/git-try-push@main # zizmor: ignore[unpinned-uses]
+        uses: Homebrew/actions/git-try-push@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
         with:
           token: ${{ steps.app-token.outputs.token }}
           directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
@@ -285,7 +289,7 @@ jobs:
 
       - name: Open PR with bottle commit
         id: create-pr
-        uses: Homebrew/actions/create-pull-request@main # zizmor: ignore[unpinned-uses]
+        uses: Homebrew/actions/create-pull-request@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
         with:
           token: ${{ steps.app-token.outputs.token }}
           base: ${{ github.ref }}
@@ -345,15 +349,16 @@ jobs:
           done
 
   comment:
+    name: Post comment on failure
     permissions:
-      issues: write
-      pull-requests: write
+      issues: write # for posting comment
+      pull-requests: write # for posting comment
     needs: [bottle, upload]
     if: failure() && inputs.issue > 0
     runs-on: ubuntu-latest
     steps:
       - name: Post comment on failure
-        uses: Homebrew/actions/post-comment@main # zizmor: ignore[unpinned-uses]
+        uses: Homebrew/actions/post-comment@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
         with:
           token: ${{ github.token }}
           issue: ${{ inputs.issue }}

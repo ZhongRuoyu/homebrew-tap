@@ -1,68 +1,130 @@
 name: brew pr-pull
 
 on:
-  pull_request_target:
-    # zizmor: ignore[dangerous-triggers] We need write permissions here.
-    types:
-      - labeled
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: Pull request number
+        type: number
+        required: true
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ inputs.pull_request }}
   cancel-in-progress: false
 
 permissions: {}
 
 defaults:
   run:
-    shell: bash -xeuo pipefail {0}
+    shell: bash -euxo pipefail {0}
 
 env:
   GH_REPO: ${{ github.repository }}
-  PR: ${{ github.event.pull_request.number }}
+  PR: ${{ inputs.pull_request }}
 
 jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    outputs:
+      remote: ${{ steps.pr-branch-check.outputs.remote }}
+      remote_branch: ${{ steps.pr-branch-check.outputs.remote_branch }}
+      head_sha: ${{ steps.pr-branch-check.outputs.head_sha }}
+    steps:
+      - name: Check PR branch
+        id: pr-branch-check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_data="$(
+            gh api \
+              --header 'Accept: application/vnd.github+json' \
+              --header 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/$GH_REPO/pulls/$PR"
+          )"
+
+          remote="$(jq --raw-output .head.repo.clone_url <<< "$pr_data")"
+          remote_branch="$(jq --raw-output .head.ref <<< "$pr_data")"
+          head_sha="$(jq --raw-output .head.sha <<< "$pr_data")"
+
+          if [[ -z "$remote" ]] ||
+             [[ -z "$remote_branch" ]] ||
+             [[ -z "$head_sha" ]]
+          then
+            echo "::error ::Failed to get PR data!"
+            exit 1
+          fi
+
+          {
+            echo "remote=$remote"
+            echo "remote_branch=$remote_branch"
+            echo "head_sha=$head_sha"
+          } >> "$GITHUB_OUTPUT"
+
   pr-pull:
-    if: contains(github.event.pull_request.labels.*.name, 'pr-pull')
+    name: brew pr-pull
+    needs: check
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/homebrew/brew:main # zizmor: ignore[unpinned-images]
     permissions:
-      actions: read
-      artifact-metadata: write
-      attestations: write
-      checks: read
-      contents: write
-      id-token: write
-      issues: read
-      packages: write
-      pull-requests: write
+      actions: read # for `brew pr-pull`
+      artifact-metadata: write # for generating build provenance
+      attestations: write # for generating build provenance
+      checks: read # for `brew pr-pull`
+      contents: write # for pushing bottle commits
+      id-token: write # for generating build provenance
+      issues: read # for `brew pr-pull`
+      packages: write # for uploading bottles
+      pull-requests: write # for managing PR
+    environment:
+      name: github
+      deployment: false
     defaults:
       run:
+        shell: bash -euxo pipefail {0}
         working-directory: /github/home
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@main # zizmor: ignore[unpinned-uses]
+        uses: Homebrew/actions/setup-homebrew@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
 
-      - name: Set up git
-        uses: Homebrew/actions/git-user-config@main # zizmor: ignore[unpinned-uses]
+      - name: Configure Git user
+        uses: Homebrew/actions/git-user-config@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
         with:
           username: zhongruoyu-commit-app[bot]
 
       - name: Checkout PR branch
+        id: checkout-pr
         working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh pr checkout "$PR"
+        run: |
+          gh pr checkout "$PR"
+          echo "branch=$(git rev-parse --abbrev-ref HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Pull bottles
         id: brew-pr-pull
         working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
         env:
+          EXPECTED_SHA: ${{ needs.check.outputs.head_sha }}
           HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
           HOMEBREW_GITHUB_PACKAGES_TOKEN: ${{ github.token }}
           HOMEBREW_GITHUB_PACKAGES_USER: ${{ github.repository_owner }}
         run: |
+          local_git_head="$(git rev-parse HEAD)"
+          remote_git_head="$(git ls-remote origin "pull/$PR/head" | cut -f1)"
+
+          if [ "$local_git_head" != "$EXPECTED_SHA" ] ||
+             [ "$remote_git_head" != "$EXPECTED_SHA" ]
+          then
+            echo "::error ::Unexpected change in target branch."
+            echo "::error ::Expected SHA1    $EXPECTED_SHA"
+            echo "::error ::Checked out SHA1 $local_git_head"
+            echo "::error ::PR branch SHA1   $remote_git_head"
+            exit 1
+          fi
+
           brew pr-pull \
             --debug \
             --clean \
@@ -88,19 +150,13 @@ jobs:
           permission-pull-requests: write
 
       - name: Push commits
-        uses: Homebrew/actions/git-try-push@main # zizmor: ignore[unpinned-uses]
+        uses: Homebrew/actions/git-try-push@c262868c096d909fc278daa87ed9772967331ea3 # 2026.11.02.1
         with:
           token: ${{ steps.app-token.outputs.token }}
           directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
-          branch: ${{ github.head_ref }}
-
-      - name: Remove pr-pull label on failure
-        if: failure()
-        working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh pr edit --remove-label="pr-pull" "$PR"
+          remote: ${{ needs.check.outputs.remote }}
+          branch: ${{ steps.checkout-pr.outputs.branch }}
+          remote_branch: ${{ needs.check.outputs.remote_branch }}
 
       - name: Add CI-published-bottle-commits label
         working-directory: ${{ steps.set-up-homebrew.outputs.repository-path }}
