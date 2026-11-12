@@ -324,7 +324,7 @@ jobs:
           PR: ${{ steps.create-pr.outputs.number }}
         run: |
           # Hold the `concurrency` lock for up to another 5 minutes while the PR has not yet been merged.
-          sleep 150
+          sleep 120
 
           attempt=0
           max_attempts=4
