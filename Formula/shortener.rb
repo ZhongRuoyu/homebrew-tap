@@ -2,8 +2,8 @@ class Shortener < Formula
   desc "Simple URL shortener"
   homepage "https://github.com/ZhongRuoyu/shortener"
   url "https://github.com/ZhongRuoyu/shortener.git",
-      tag:      "v0.2.0",
-      revision: "bb7489c27bf4f5caee6978bc7b38d591ce0c4329"
+      tag:      "v0.2.1",
+      revision: "e22b1590e5ac115d76c84c428c39b35ce19ceaf6"
   license "MIT"
   head "https://github.com/ZhongRuoyu/shortener.git", branch: "main"
 
