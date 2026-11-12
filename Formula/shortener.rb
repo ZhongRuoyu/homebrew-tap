@@ -9,12 +9,11 @@ class Shortener < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
-    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "376cf41db9012a5e413f51ad690bdcf94180863809d3f4e8cace380cec0d2b06"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "87b848b1170a26c09955b91da0702255d67231de94bb38f5670de067f8899c6d"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "47022f0553c790f0c743f3a5c6bbf2ceb5124c1b53fa5814297857594871a80e"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "836815946bcb817dd78fffd034ee1de8b2d169a100357e4f0872e148360d2718"
-    sha256 cellar: :any_skip_relocation, arm64_linux:       "c3db50e8e38a108ecb9fc741d773ecea8f2370303659620ec298a7c60182828b"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:      "c5321a3dfbbeacfc3814faefc6ac6bfc63d82d68b9623c6eb87231b737b2cd50"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "8ddf7cef52d0e699689edaaa07df5ab49ad20cfb215ff78cd80c9969cd8fd855"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "ffd68c7a1cc86e91891d1b03fe474fdcfbae8b285ea4b36e556498ff7ea7b536"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "9f707b26e4d77d1454986cb6a6d86694acaac4861a04d8a5428538f943c4e3c8"
+    sha256 cellar: :any,                 arm64_linux:       "4ab44dc565833023e9172093cb91e6dc4a62764739505467d1099b77ff058634"
+    sha256 cellar: :any,                 x86_64_linux:      "26adacb4f37c24fa3e0d0c61acc2a077164cbe352dc5b536357dc6ad736bae01"
   end
 
   depends_on "rust" => :build
