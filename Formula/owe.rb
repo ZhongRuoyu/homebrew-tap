@@ -10,12 +10,11 @@ class Owe < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
-    sha256 cellar: :any, arm64_golden_gate: "cbf5a097d995ef45e93ad8ff07051009e066c3e9d57f7c0fdad5d9dacd29ac3e"
-    sha256 cellar: :any, arm64_tahoe:       "078ff1dec236f76ec401bab74c984f45ada4f8616ffc389969f599b9087a4b56"
-    sha256 cellar: :any, arm64_sequoia:     "d127ffb84787fe0e0a9a680bc0d56adc5cc234b6315ef7ef2720257241f7919b"
-    sha256 cellar: :any, arm64_sonoma:      "e61048a1c0729a8038e2c2ce5f9d89f6d8698a704163af556d21ba4c76366365"
-    sha256 cellar: :any, arm64_linux:       "24de89168477ac8601f81d510e2bdacf0261eab6866c7705357adbc1b6a55dc2"
-    sha256 cellar: :any, x86_64_linux:      "654d21b74bc6d9c501ead87bfe9f620a265ab49b77e6df7f9d399c00e6e6b96a"
+    sha256 cellar: :any, arm64_golden_gate: "432457fb7736b7f9037b87cd3c262208c0bad9cd30fdafa02d7cfc5c2273ae56"
+    sha256 cellar: :any, arm64_tahoe:       "8d2a2e0acb085f185dc9b8f64a6a500da559af702aaadb259529cbd1ddb896cf"
+    sha256 cellar: :any, arm64_sequoia:     "437c6fa68164d0a934b76d24736eb113056271222bcf4bd81467a1a284c19fdb"
+    sha256 cellar: :any, arm64_linux:       "1e8de61d80f9c6fdfaaa956b5796a747169a97ecbb910f0cfef4f19890449a76"
+    sha256 cellar: :any, x86_64_linux:      "e9ce8a70ec5848116d35b7dc769565f365b61fabd3cbaf74021cafee35e2a1e0"
   end
 
   depends_on "rust" => :build # for uv_build
