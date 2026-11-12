@@ -14,13 +14,14 @@ class CmakeAT3 < Formula
 
   bottle do
     root_url "https://ghcr.io/v2/zhongruoyu/zhongruoyu-homebrew-tap"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:   "160bfe46ff674206ad784654bc0def556804a05017d48be0d8878148b582b4d6"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "06dd84c6ea24f3661ea613d8f5147f30319475509d4d1ea31754361aa28b70c5"
-    sha256 cellar: :any_skip_relocation, arm64_sonoma:  "4b1cdd01c70cc0a0246bfab53888a424e140908d44256dd12380247556cbb756"
-    sha256 cellar: :any_skip_relocation, tahoe:         "029fd1dca77e75f675d77fc96fffca49e0e92f223474b6f2fe0d23bef64b39ff"
-    sha256 cellar: :any_skip_relocation, sequoia:       "c61f8f4ff59d549c238b2fa6ed5f8cfba349b3eaf4a6c624cfb5ddeb7cbf8a32"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "4eb2aa280a98a26cdd795bb81ed0d52eda8fa770302f99944b400e07bab67334"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e2a8c30c8769f0110992162e57a990a3524b95a072d32179d598ab7e81e17935"
+    sha256 cellar: :any_skip_relocation, arm64_golden_gate: "8cf3b6a0c816677b6ebb4df6e89f311e09d2707eb043fad6f014f29c0f972c66"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:       "160bfe46ff674206ad784654bc0def556804a05017d48be0d8878148b582b4d6"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia:     "06dd84c6ea24f3661ea613d8f5147f30319475509d4d1ea31754361aa28b70c5"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma:      "4b1cdd01c70cc0a0246bfab53888a424e140908d44256dd12380247556cbb756"
+    sha256 cellar: :any_skip_relocation, tahoe:             "029fd1dca77e75f675d77fc96fffca49e0e92f223474b6f2fe0d23bef64b39ff"
+    sha256 cellar: :any_skip_relocation, sequoia:           "c61f8f4ff59d549c238b2fa6ed5f8cfba349b3eaf4a6c624cfb5ddeb7cbf8a32"
+    sha256 cellar: :any_skip_relocation, arm64_linux:       "4eb2aa280a98a26cdd795bb81ed0d52eda8fa770302f99944b400e07bab67334"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:      "e2a8c30c8769f0110992162e57a990a3524b95a072d32179d598ab7e81e17935"
   end
 
   keg_only :versioned_formula
