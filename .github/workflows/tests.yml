@@ -29,10 +29,8 @@ jobs:
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@63a2d4d8d4193eab3e62b1b782ff3ab8408f5b29 # 2026.11.09.1
+        uses: Homebrew/actions/setup-homebrew@ceec4e8419bb3c97ce96e9dda7738499ed5f869d # 2026.11.14.1
         with:
-          core: true
-          cask: false
           stable: true
 
       - name: Cache style cache
@@ -118,7 +116,7 @@ jobs:
       BOTTLES_DIR: ${{ matrix.working-directory || github.workspace }}/bottles
     steps:
       - name: Pre-test steps
-        uses: Homebrew/actions/pre-build@63a2d4d8d4193eab3e62b1b782ff3ab8408f5b29 # 2026.11.09.1
+        uses: Homebrew/actions/pre-build@ceec4e8419bb3c97ce96e9dda7738499ed5f869d # 2026.11.14.1
         with:
           bottles-directory: ${{ env.BOTTLES_DIR }}
           cleanup: ${{ runner.os == 'macOS' }}
@@ -137,7 +135,7 @@ jobs:
 
       - name: Post-build steps
         if: always() && github.event_name == 'pull_request'
-        uses: Homebrew/actions/post-build@63a2d4d8d4193eab3e62b1b782ff3ab8408f5b29 # 2026.11.09.1
+        uses: Homebrew/actions/post-build@ceec4e8419bb3c97ce96e9dda7738499ed5f869d # 2026.11.14.1
         with:
           bottles-directory: ${{ env.BOTTLES_DIR }}
           logs-directory: ${{ format('{0}/logs', env.BOTTLES_DIR) }}
